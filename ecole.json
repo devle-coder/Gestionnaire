@@ -1,0 +1,51 @@
+{
+    "professeurs": [
+        {
+            "_id": 1,
+            "nom": "Jea12",
+            "prenom": "Dupont",
+            "age": 40,
+            "metier": "Prof",
+            "matiere": [
+                "Mathématiques",
+                "Physique"
+            ]
+        },
+        {
+            "_id": 2,
+            "nom": "Jea12",
+            "prenom": "Dupont",
+            "age": 40,
+            "metier": "Prof",
+            "matiere": [
+                "Mathématiques",
+                "Physique"
+            ]
+        }
+    ],
+    "eleves": [
+        {
+            "_id": 3,
+            "nom": "Alice",
+            "prenom": "Martin",
+            "age": 15,
+            "metier": "Étudiant"
+        },
+        {
+            "_id": 4,
+            "nom": "doura",
+            "prenom": "maiga",
+            "age": 22,
+            "metier": "Étudiant"
+        }
+    ],
+    "personnels": [
+        {
+            "_id": 5,
+            "nom": "Bob",
+            "prenom": "Smith",
+            "age": 30,
+            "metier": "Nettoyeur"
+        }
+    ]
+}
