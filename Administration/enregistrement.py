@@ -59,4 +59,4 @@ class Ecole:
         return f"ID : {self._id} | Nom : {self.nom} | Prenom : {self.prenom} | age : {self.age} | Métier : {self.metier}"
 
 if __name__ == '__main__':
-    print(Ecole.__dict__)
+    ecole = Ecole
