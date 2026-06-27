@@ -1,8 +1,12 @@
+from abc import ABC, abstractmethod
+
 
 class ErreurPersonne(Exception):
     pass
 
-class Ecole:
+class Ecole(ABC):
+    __module__ = "Ecole"
+
     _id = 0
     def __init__(self, nom: str, prenom: str, age: int, metier: str, _id=None):
         if _id is None:
@@ -15,7 +19,7 @@ class Ecole:
         self.metier = metier
 
 
-
+    @abstractmethod
     def to_dict(self) :
         return {
             "id" : self.id,
@@ -59,4 +63,4 @@ class Ecole:
         return f"ID : {self._id} | Nom : {self.nom} | Prenom : {self.prenom} | age : {self.age} | Métier : {self.metier}"
 
 if __name__ == '__main__':
-    ecole = Ecole
+    pass

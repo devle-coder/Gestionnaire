@@ -1,7 +1,9 @@
 from Administration.enregistrement import Ecole
 
 class Eleve(Ecole):
-    def __init__(self, nom, prenom, age, metier,id=None):
+    def __init__(self, nom, prenom, age, metier, classe, note, id=None):
+        self.note = note
+        self.classe = classe
         super().__init__(nom, prenom, age, metier,_id=id)
 
     def _nom(self):
@@ -20,8 +22,7 @@ class Eleve(Ecole):
         return super().__str__()
 
 if __name__ == '__main__':
-    eleve = Eleve('doura', 'mohamar', 22, 'eleve')
-    print(eleve.to_dict())
+    pass
 
 
 

@@ -1,17 +1,18 @@
 from Administration.enregistrement import Ecole
 
 class Professeurs(Ecole):
-    def __init__(self, nom, prenom, age, metier, matier):
-        self.matiere = list(matier)
-        self.metier = list(metier)
+    __module__ = "Professeurs"
+
+    def __init__(self, nom, prenom, age, metier, matier, classe):
+        self.matier = matier
+        self.classe = classe
         super().__init__(nom, prenom, age, metier)
-        self.metier = metier
 
     def _nom(self):
-        return super().nom()
+        return super()._nom()
     
     def _prenom(self):
-        return super().prenom()
+        return super()._prenom()
     
     def get_age(self):
         return super().get_age
@@ -19,8 +20,19 @@ class Professeurs(Ecole):
     def metier(self):   
         return super().metier()
 
-    def matier(self):
-        return self.matiere
+    def to_dict(self):
+        data = super().to_dict()
+        data['matier'] = self.matier
+        data['classe'] = self.classe
+        if self.matier is not None:
+            data['classe'] = str(data['classe']).replace(",", "").replace("[", "").replace("]", "").replace("'", "")
+
+            data['matier'] = str(data['matier']).replace(",", "").replace("[", "").replace("]", "").replace("'", "")
+        return data
+
     
     def __str__(self):
         return super().__str__()    
+
+pr = Professeurs(nom='rk', prenom='kl', age=22, metier='', matier=['0,0 f,f f',], classe='termia, .d nl')
+print(pr.to_dict())

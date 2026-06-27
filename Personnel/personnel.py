@@ -28,9 +28,9 @@ class Personnels(Ecole):
         data['metier'] = student.metier
         return data
 
-
-personnels = Personnels('s','d',2,'d')
-print(personnels)
-print(personnels.save_student(personnels))
+if __name__ == '__main__':
+    personnels = Personnels('s','d',2,'d')
+    print(personnels)
+    print(personnels.save_student(personnels))
     
     

@@ -1,15 +1,14 @@
 from Administration.enregistrement import Ecole
 from Eleves.eleve import Eleve
-from Personnel.personnel import personnels
+from Personnel.personnel import Personnels
 from Prof.professeurs import Professeurs
 from database.database import Base
 
 
 class Servicec:
-    __tablename__ = 'service'
+    __module__ = 'service'
 
-
-print(Servicec.__tablename__)
+print(Servicec.__module__)
 
 
 # class Service:
