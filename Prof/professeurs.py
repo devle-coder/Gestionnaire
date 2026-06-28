@@ -33,6 +33,6 @@ class Professeurs(Ecole):
     
     def __str__(self):
         return super().__str__()    
-
-pr = Professeurs(nom='rk', prenom='kl', age=22, metier='', matier=['0,0 f,f f',], classe='termia, .d nl')
-print(pr.to_dict())
+if __name__ == "__main__":
+    pr = Professeurs(nom='rk', prenom='kl', age=22, metier='', matier=['0,0 f,f f',], classe='termia, .d nl')
+    print(pr.to_dict())

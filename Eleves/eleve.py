@@ -1,3 +1,5 @@
+
+
 from Administration.enregistrement import Ecole
 
 class Eleve(Ecole):
@@ -17,6 +19,16 @@ class Eleve(Ecole):
     
     def metier(self):
         return f"Métier: {super().metier()}"
+
+    def to_dict(self):
+        return {'nom': self.nom,
+                'prenom': self.prenom,
+                'age': self.age,
+                'metier': self.metier,
+                'classe': self.classe,
+                'note': self.note
+
+                }
     
     def __str__(self):
         return super().__str__()

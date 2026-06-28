@@ -19,7 +19,7 @@ class Ecole(ABC):
         self.metier = metier
 
 
-    @abstractmethod
+
     def to_dict(self) :
         return {
             "id" : self.id,
