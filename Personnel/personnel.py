@@ -1,6 +1,8 @@
 from Administration.enregistrement import Ecole
 
 class Personnels(Ecole):
+    __tablename__ = 'Personnels'
+
     def __init__(self, nom, prenom, age, metier):
         super().__init__(nom, prenom, age, metier)
 
@@ -8,7 +10,7 @@ class Personnels(Ecole):
         return f"Nom: {super().nom()}"
     
     def _prenom(self):
-        return f"Prenom: {super().prenom()}"
+        return f"Prenom: {super().prenom()}" # pyright: ignore[reportCallIssue]
     
     def get_age(self):
         return f"Age: {super().get_age}"
@@ -19,18 +21,13 @@ class Personnels(Ecole):
     def __str__(self):
         return super().__str__()
 
-    def save_student(self,student) :
-        data = dict()
-        data['id'] = student.id
-        data['nom'] = student.nom
-        data['prenom'] = student.prenom
-        data['age'] = student.age
-        data['metier'] = student.metier
+    def to_dict(self) :
+        data = super().to_dict()
         return data
 
 if __name__ == '__main__':
-    personnels = Personnels('s','d',2,'d')
+    personnels = Personnels('ali','issa',22,"main-d'œuvre")
     print(personnels)
-    print(personnels.save_student(personnels))
+    print(personnels.to_dict())
     
     

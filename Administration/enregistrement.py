@@ -5,21 +5,18 @@ class ErreurPersonne(Exception):
     pass
 
 class Ecole(ABC):
-    __module__ = "Ecole"
 
-    _id = 0
+    __class__ = "Ecole" 
     def __init__(self, nom: str, prenom: str, age: int, metier: str, _id=None):
-        if _id is None:
-            self.id = Ecole._id
-            Ecole._id = Ecole._id + 1
-
+        super().__init__()
+     
+        self.id = _id
         self.nom = nom
         self.prenom = prenom
         self.age = age
         self.metier = metier
 
-
-
+    @abstractmethod
     def to_dict(self) :
         return {
             "id" : self.id,
@@ -60,7 +57,9 @@ class Ecole(ABC):
 
 
     def __str__(self):
-        return f"ID : {self._id} | Nom : {self.nom} | Prenom : {self.prenom} | age : {self.age} | Métier : {self.metier}"
+        return f"ID : {self.id} | Nom : {self.nom} | Prenom : {self.prenom} | age : {self.age} | Métier : {self.metier}"
 
+
+        
 if __name__ == '__main__':
     pass

@@ -3,8 +3,10 @@
 from Administration.enregistrement import Ecole
 
 class Eleve(Ecole):
-    def __init__(self, nom, prenom, age, metier, classe, note, id=None):
-        self.note = note
+
+    __tablename__ = 'Eleves'
+
+    def __init__(self, nom, prenom, age, metier, classe, id=None):
         self.classe = classe
         super().__init__(nom, prenom, age, metier,_id=id)
 
@@ -21,20 +23,20 @@ class Eleve(Ecole):
         return f"Métier: {super().metier()}"
 
     def to_dict(self):
-        return {'nom': self.nom,
-                'prenom': self.prenom,
-                'age': self.age,
-                'metier': self.metier,
-                'classe': self.classe,
-                'note': self.note
+        data = super().to_dict()
+        data['metier'] = self.metier
+        data['classe'] = self.classe
 
-                }
+
+
+        return data
     
     def __str__(self):
         return super().__str__()
 
 if __name__ == '__main__':
-    pass
+    eleve = Eleve('Ali', 'moussa', 23,'Etudiant' ,"Terminale")
+    print(eleve.to_dict())
 
 
 

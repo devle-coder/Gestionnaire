@@ -1,7 +1,7 @@
 from Administration.enregistrement import Ecole
 
 class Professeurs(Ecole):
-    __module__ = "Professeurs"
+    __tablename__ = "Professeurs"
 
     def __init__(self, nom, prenom, age, metier, matier, classe):
         self.matier = matier
@@ -24,10 +24,6 @@ class Professeurs(Ecole):
         data = super().to_dict()
         data['matier'] = self.matier
         data['classe'] = self.classe
-        if self.matier is not None:
-            data['classe'] = str(data['classe']).replace(",", "").replace("[", "").replace("]", "").replace("'", "")
-
-            data['matier'] = str(data['matier']).replace(",", "").replace("[", "").replace("]", "").replace("'", "")
         return data
 
     
