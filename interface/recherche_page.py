@@ -1,8 +1,8 @@
 from PySide6 import QtCore, QtWidgets
 from PySide6.QtCore import QSize, QRect
 from PySide6.QtGui import QPixmap, Qt
-from PySide6.QtWidgets import (QFileDialog, QLabel, QHBoxLayout, QVBoxLayout, QWidget, QApplication, QPushButton,
-                               QLineEdit, QListWidget, QButtonGroup, QRadioButton)
+from PySide6.QtWidgets import (QLabel, QHBoxLayout, QVBoxLayout, QWidget, QApplication, QPushButton,
+                               QLineEdit, QListWidget, QButtonGroup, QRadioButton, QMessageBox)
 
 from Services.service import Service
 import sys
@@ -35,26 +35,24 @@ class RecherchePage(QWidget):
         layout_btn.addWidget(self.BtnRetour)
 
 
-        # page = QWidget()
-
         layout_radio = QVBoxLayout() # < page
         layout_radio.setContentsMargins(16, 16, 16, 16)
         layout_radio.setSpacing(12)
         st = """background-color: #298E75FF; border: 3px solid #334155; border-radius: 5px, 5px;"""
 
-        self.radio_eleve = QRadioButton("Eleve")
+        self.radio_eleve = QRadioButton("Élève")
         self.radio_eleve.setStyleSheet(st)
         self.radio_prof = QRadioButton("Prof")
         self.radio_prof.setStyleSheet(st)
-        self.radio_perso = QRadioButton("Person")
+        self.radio_perso = QRadioButton("Personnel")
         self.radio_perso.setStyleSheet(st)
-        self.radio_eleve.setChecked(True)
+        self.radio_prof.setChecked(True)
 
-        # radio_group = QButtonGroup(page)
-        #
-        # radio_group.addButton(self.radio_eleve)
-        # radio_group.addButton(self.radio_prof)
-        # radio_group.addButton(self.radio_perso)
+        self.radio_group = QButtonGroup(self)
+
+        self.radio_group.addButton(self.radio_eleve)
+        self.radio_group.addButton(self.radio_prof)
+        self.radio_group.addButton(self.radio_perso)
 
         layout_btn.addWidget(self.radio_eleve)
         layout_btn.addWidget(self.radio_prof)
@@ -111,50 +109,76 @@ class RecherchePage(QWidget):
 
         return conteneur
 
-    def check_btn_clicked(self):
-        if self.radio_eleve.isChecked():
-            action = 'Eleve'
-            return action
-        elif self.radio_prof.isChecked():
-            action = 'Prof'
-            return action
-        elif self.radio_perso.isChecked():
-            action = 'Perso'
-            return action
-
-        return None
+    def check_btn_clicked(self, bouton):
+        self.apercu_des_users()
+        self.deletelater(self.form)
+        return bouton.text()
 
 
 
     def connexion(self):
+        self.apercu_des_users()
         self.BtnRetour.clicked.connect(self.retour_demande.emit)
         self.champ_recherche.textChanged.connect(self.filtrer_apercu)
-        self.apercu_des_users()
+
         self.listes_apercu.itemClicked.connect(self.get_user_click)
+        self.radio_group.buttonClicked.connect(self.check_btn_clicked)
 
 
 
     # ajouter les elements de l'aperçue
     def apercu_des_users(self):
-        items = Service().get_eleves()
+        items = self.get_users()
+
         self.listes_apercu.clear()
-        for i in items:
-            text = f"ID: {i[0]}: {i[1]}  {i[2]}"
-            item = QtWidgets.QListWidgetItem(text)
-            item.setData(QtCore.Qt.UserRole, i[0])
-            self.listes_apercu.addItem(item)
+        if isinstance(items, list):
+            for i in items:
+                text = f"ID: {i[0]}: {i[1]}  {i[2]}"
+                item = QtWidgets.QListWidgetItem(text)
+                item.setData(QtCore.Qt.UserRole, i[0])
+                item.setData(QtCore.Qt.UserRole + 1, self.get_choix())
+                self.listes_apercu.addItem(item)
+
+
+    def get_choix(self):
+        bouton = self.radio_group.checkedButton()
+        if bouton is None:
+            return "Prof"
+        return bouton.text()
+
+
+    def get_users(self):
+        service = Service()
+        choix = self.get_choix()
+        if choix == "Élève":
+            return service.get_eleves()
+        if choix == "Prof":
+            return service.get_profs()
+        if choix == "Personnel":
+            return service.get_personnels()
+        return service.get_eleves()
 
 
     def get_user_click(self, item):
         user_click = item.data(QtCore.Qt.UserRole)
-        user_click = Service().get_eleve_by_id(int(user_click))
+        choix = item.data(QtCore.Qt.UserRole + 1)
+        service = Service()
+        if choix == "Élève":
+            users = service.get_eleve_by_id(int(user_click))
+        elif choix == "Prof":
+            users = service.get_prof_by_id(int(user_click))
+        elif choix == "Personnel":
+            users = service.get_personnel_by_id(int(user_click))
+        else:
+            users = []
 
-        if user_click:
-            ID = user_click[0][0]
-            nom = user_click[0][1]
-            prenom = user_click[0][2]
-            age = user_click[0][3]
-            metier = user_click[0][4]
+        if isinstance(users, list) and users:
+            user = users[0]
+            ID = user[0]
+            nom = user[1]
+            prenom = user[2]
+            age = user[3]
+            metier = user[4]
 
             self.deletelater(self.form)
             self.form.addRow("<b>ID</b>", QLabel(f"<b>{ID}</b>"))
@@ -162,6 +186,11 @@ class RecherchePage(QWidget):
             self.form.addRow("<b>Prénom</b>", QLabel(f"<b>{prenom}</b>"))
             self.form.addRow("<b>Âge</b>", QLabel(f"<b>{age}</b>"))
             self.form.addRow("<b>Métier</b>", QLabel(f"<b>{metier}</b>"))
+            if choix == "Élève" and len(user) > 5:
+                self.form.addRow("<b>Classe</b>", QLabel(f"<b>{user[5]}</b>"))
+            elif choix == "Prof" and len(user) > 6:
+                self.form.addRow("<b>Matière</b>", QLabel(f"<b>{user[5]}</b>"))
+                self.form.addRow("<b>Classe</b>", QLabel(f"<b>{user[6]}</b>"))
 
 
 
@@ -169,37 +198,34 @@ class RecherchePage(QWidget):
 
     # Le filtrage du texte tapé
     def filtrer_apercu(self, texte: str):
+        users = self.get_users()
+
         q = (texte or '').strip().lower()
-        users = Service()
-        users = users.get_eleves()
+
         filtres = []
-        if not q:
-            filtres = users
-        else:
-            for i in users:
-                if q in str(i[1]).lower() or q in str(i[2]).lower() or q in str(i[0]):
-                    filtres.append(i)
+        if isinstance(users, list):
+            if not q:
+                filtres = users
+            else:
+                for i in users:
+                    if q in str(i[1]).lower() or q in str(i[2]).lower() or q in str(i[0]):
+                        filtres.append(i)
         self.listes_apercu.clear()
         for user in filtres:
             text = f"ID: {user[0]}: {user[1]}  {user[2]}"
             item = QtWidgets.QListWidgetItem(text)
             item.setData(QtCore.Qt.UserRole, user[0])
+            item.setData(QtCore.Qt.UserRole + 1, self.get_choix())
             self.listes_apercu.addItem(item)
 
 
 
     def deletelater(self, layout) -> None:
         if layout is not None:
-            for i in reversed(range(self.form.count())):
-                item = self.form.itemAt(i)
-
-
-                widget = item.widget()
-                if widget is not None:
-                    widget.deleteLater()
-
-                elif item.layout() is not None:
-                    self.deleteLater()
+            while layout.count():
+                item = layout.takeAt(0)
+                if item.widget() is not None:
+                    item.widget().deleteLater()
 
 
 
